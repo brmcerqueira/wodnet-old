@@ -4,18 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import {TranslateModule, TranslateService} from "ng2-translate";
 import {MasterComponent} from "./master.component";
-import {ConnectedMasterComponent} from "./connected.master.component";
-import {DisconnectedMasterComponent} from "./disconnected.master.component";
 import {RouteModule} from "./route.module";
-import {ChatComponent} from "./chat.component";
+import {GameComponent} from "./game.component";
 import {PageNotFoundComponent} from "./page.not.found.component";
 
 @NgModule({
   declarations: [
     MasterComponent,
-    ConnectedMasterComponent,
-    DisconnectedMasterComponent,
-    ChatComponent,
+    GameComponent,
     PageNotFoundComponent
   ],
   imports: [
