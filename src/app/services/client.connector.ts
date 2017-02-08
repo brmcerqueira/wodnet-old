@@ -1,15 +1,16 @@
-import {PeerService} from "./peer.service";
+import {Connector} from "./connector";
 import {Message, MessageType, MessageResult} from "../message";
 import {Person} from "../person";
 import {Connection} from "../connection";
 import {DataConnection} from "../peer";
+import {NgZone} from "@angular/core";
 
-export class ClientPeerService extends PeerService {
+export class ClientConnector extends Connector {
 
   private host: DataConnection;
 
-  constructor(id: string, name: string) {
-    super();
+  constructor(zone: NgZone, id: string, name: string) {
+    super(zone);
     this.createPeer();
     let person: Person = { name: name };
     this.host = this.peer.connect(id, { metadata: person });

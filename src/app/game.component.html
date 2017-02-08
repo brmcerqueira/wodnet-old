@@ -17,6 +17,9 @@
 </div>
 <div [hidden]="!isConnected">
   <ul>
+    <li *ngFor="let connection of connections">{{connection.metadata.name}}</li>
+  </ul>
+  <ul>
     <li *ngFor="let message of messages">{{message.data}}</li>
   </ul>
   <form class="form form-content" [formGroup]="textFormGroup" (ngSubmit)="sendText()">

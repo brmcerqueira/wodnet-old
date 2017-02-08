@@ -7,6 +7,7 @@ import {MasterComponent} from "./master.component";
 import {RouteModule} from "./route.module";
 import {GameComponent} from "./game.component";
 import {PageNotFoundComponent} from "./page.not.found.component";
+import {ConnectorService} from "./services/connector.service";
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import {PageNotFoundComponent} from "./page.not.found.component";
     RouteModule,
     TranslateModule.forRoot()
   ],
-  providers: [],
+  providers: [ConnectorService],
   bootstrap: [MasterComponent]
 })
 export class AppModule {

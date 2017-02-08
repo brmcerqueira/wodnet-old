@@ -1,23 +1,22 @@
-import {Component, NgZone} from '@angular/core';
+import {Component} from '@angular/core';
 import {MessageResult, MessageType, Message} from "./message";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {PeerService} from "./services/peer.service";
-import {ClientPeerService} from "./services/client.peer.service";
-import {HostPeerService} from "./services/host.peer.service";
-import {Observable, Subject, BehaviorSubject, Subscriber} from "rxjs";
+import {Connector} from "./services/connector";
+import {ConnectorService} from "./services/connector.service";
+import {DataConnection} from "./peer";
 
 @Component({
   templateUrl: 'game.component.html',
 })
 export class GameComponent {
 
-  private peerService: PeerService;
+  private connector: Connector;
   public messages: Message[];
   public enterFormGroup: FormGroup;
   public textFormGroup: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private zone: NgZone) {
-    this.peerService = null;
+  constructor(private formBuilder: FormBuilder, private connectorService: ConnectorService) {
+    this.connector = null;
     this.enterFormGroup = this.formBuilder.group({
       id: null,
       name: null
@@ -29,20 +28,24 @@ export class GameComponent {
   }
 
   public get isConnected(): boolean {
-    return this.peerService != null;
+    return this.connector != null;
+  }
+
+  public get connections(): DataConnection[] {
+    return this.isConnected ? this.connector.connections : [];
   }
 
   public enter() {
     if (this.enterFormGroup.value.name) {
-      this.peerService = new ClientPeerService(this.enterFormGroup.value.id, this.enterFormGroup.value.name);
+      this.connector = this.connectorService.client(this.enterFormGroup.value.id, this.enterFormGroup.value.name);
     } else {
-      this.peerService = new HostPeerService(this.enterFormGroup.value.id);
+      this.connector = this.connectorService.host(this.enterFormGroup.value.id);
     }
-    this.peerService.messagesSubject.subscribe(m => this.zone.run(() => this.messages.push(m)));
+    this.connector.messagesSubject.subscribe(m => this.messages.push(m));
   }
 
   public sendText() {
     let textMessage: MessageResult<string> = { type: MessageType.Text, data: this.textFormGroup.value.text };
-    this.peerService.send(textMessage);
+    this.connector.send(textMessage);
   }
 }

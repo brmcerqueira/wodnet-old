@@ -2,14 +2,15 @@ import {Subject} from "rxjs";
 import {Message, MessageType} from "../message";
 import {Person} from "../person";
 import {Peer, PeerJSOption, DataConnection} from "../peer";
+import {NgZone} from "@angular/core";
 
-export abstract class PeerService {
+export abstract class Connector {
   private _peer: Peer;
   private _option: PeerJSOption;
   private _messagesSubject: Subject<Message>;
   private _connections: DataConnection[];
 
-  constructor() {
+  constructor(private zone: NgZone) {
     this._option =
       //{ key: 'm9jf0d77w8p30udi' };
       { host: 'localhost', port: 9000 };
@@ -37,9 +38,9 @@ export abstract class PeerService {
   }
 
   protected newConnection(connection: DataConnection): void {
-    this._connections.push(connection);
+    this.zone.run(() => this._connections.push(connection));
     connection.on('close', (): void => {
-      this._connections.splice(this._connections.indexOf(connection), 1);
+      this.zone.run(() => this._connections.splice(this._connections.indexOf(connection), 1));
     });
     connection.on('data', (message: Message): void => {
       this.onDataCallback(connection, message);
@@ -50,7 +51,7 @@ export abstract class PeerService {
   protected onDataCallback(connection: DataConnection, message: Message): void {
     switch (message.type) {
       case MessageType.Text:
-        this.messagesSubject.next(message);
+        this.zone.run(() => this.messagesSubject.next(message));
         break;
     }
   }
