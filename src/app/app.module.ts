@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import {TranslateModule, TranslateService} from "ng2-translate";
 import {MasterComponent} from "./master.component";
@@ -18,6 +18,7 @@ import {PageNotFoundComponent} from "./page.not.found.component";
     BrowserModule,
     FormsModule,
     HttpModule,
+    ReactiveFormsModule,
     RouteModule,
     TranslateModule.forRoot()
   ],

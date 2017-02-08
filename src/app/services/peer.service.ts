@@ -1,20 +1,18 @@
 import {Subject} from "rxjs";
 import {Message} from "../message";
 import {Person} from "../person";
-import Peer = PeerJs.Peer;
-import PeerJSOption = PeerJs.PeerJSOption;
-import DataConnection = PeerJs.DataConnection;
+import {Peer, PeerJSOption, DataConnection} from "../peer";
 
 export abstract class PeerService {
   private _peer: Peer;
   private _option: PeerJSOption;
   private _messagesSubject: Subject<Message>;
-  private _people: Person[];
+  private _connections: DataConnection[];
 
   constructor() {
     this._option = { key: 'm9jf0d77w8p30udi' };
     this._messagesSubject = new Subject();
-    this._people = [];
+    this._connections = [];
   }
 
   protected get option(): PeerJSOption {
@@ -25,8 +23,8 @@ export abstract class PeerService {
     return this._messagesSubject;
   }
 
-  public get people(): Person[] {
-    return this._people;
+  public get connections(): DataConnection[] {
+    return this._connections;
   }
 
   protected get peer(): Peer {
@@ -39,18 +37,17 @@ export abstract class PeerService {
   }
 
   protected newConnection(connection: DataConnection): void {
-    let person = {id: connection.peer, isBlocked: false, connection: connection};
-    this.people.push(person);
+    this._connections.push(connection);
     connection.on('close', (): void => {
-      this.people.splice(this.people.indexOf(person), 1);
+      this._connections.splice(this._connections.indexOf(connection), 1);
     });
   }
 
   public send(message: Message): void {
     this.messagesSubject.next(message);
-    this._people.forEach((p) => {
-      if(!p.isBlocked) {
-        p.connection.send(message);
+    this._connections.forEach((c) => {
+      if(!(<Person>c.metadata).isBlocked) {
+        c.send(message);
       }
     });
   }
