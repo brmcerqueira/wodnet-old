@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {Connector} from "./services/connector";
 import {ConnectorService} from "./services/connector.service";
 import {DataConnection} from "./peer";
+import {Observable} from "rxjs";
 
 @Component({
   templateUrl: 'game.component.html',
@@ -36,12 +37,16 @@ export class GameComponent {
   }
 
   public enter() {
+    let callback = (c) => {
+      this.connector = c;
+      this.connector.messagesSubject.subscribe(m => this.messages.push(m));
+    };
+
     if (this.enterFormGroup.value.name) {
-      this.connector = this.connectorService.client(this.enterFormGroup.value.id, this.enterFormGroup.value.name);
+      this.connectorService.client(this.enterFormGroup.value.id, this.enterFormGroup.value.name).subscribe(callback);
     } else {
-      this.connector = this.connectorService.host(this.enterFormGroup.value.id);
+      this.connectorService.host(this.enterFormGroup.value.id).subscribe(callback);
     }
-    this.connector.messagesSubject.subscribe(m => this.messages.push(m));
   }
 
   public sendText() {

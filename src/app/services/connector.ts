@@ -10,7 +10,7 @@ export abstract class Connector {
   private _messagesSubject: Subject<Message>;
   private _connections: DataConnection[];
 
-  constructor(private zone: NgZone) {
+  constructor(private zone: NgZone, private stream: MediaStream) {
     this._option =
       //{ key: 'm9jf0d77w8p30udi' };
       { host: 'localhost', port: 9000 };

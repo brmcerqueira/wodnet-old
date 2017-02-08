@@ -6,8 +6,8 @@ import {NgZone} from "@angular/core";
 
 export class HostConnector extends Connector {
 
-  constructor(zone: NgZone, id: string) {
-    super(zone);
+  constructor(zone: NgZone, stream: MediaStream, id: string) {
+    super(zone, stream);
     this.createPeer(id);
   }
 

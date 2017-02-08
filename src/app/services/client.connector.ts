@@ -9,8 +9,8 @@ export class ClientConnector extends Connector {
 
   private host: DataConnection;
 
-  constructor(zone: NgZone, id: string, name: string) {
-    super(zone);
+  constructor(zone: NgZone, stream: MediaStream, id: string, name: string) {
+    super(zone, stream);
     this.createPeer();
     let person: Person = { name: name };
     this.host = this.peer.connect(id, { metadata: person });
