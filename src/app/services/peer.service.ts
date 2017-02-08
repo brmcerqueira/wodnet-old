@@ -1,5 +1,5 @@
 import {Subject} from "rxjs";
-import {Message} from "../message";
+import {Message, MessageType} from "../message";
 import {Person} from "../person";
 import {Peer, PeerJSOption, DataConnection} from "../peer";
 
@@ -15,10 +15,6 @@ export abstract class PeerService {
     this._connections = [];
   }
 
-  protected get option(): PeerJSOption {
-    return this._option;
-  }
-
   public get messagesSubject(): Subject<Message> {
     return this._messagesSubject;
   }
@@ -31,8 +27,9 @@ export abstract class PeerService {
     return this._peer;
   }
 
-  protected set peer(value: Peer) {
-    this._peer = value;
+  protected createPeer(id?: string): void {
+    let peerConstructor = window['Peer'];
+    this._peer = id ? new peerConstructor(id, this._option) : new peerConstructor(this._option);
     this._peer.on('connection', (connection: DataConnection): void => this.newConnection(connection));
   }
 
@@ -41,6 +38,17 @@ export abstract class PeerService {
     connection.on('close', (): void => {
       this._connections.splice(this._connections.indexOf(connection), 1);
     });
+    connection.on('data', (message: Message): void => {
+      this.onDataCallback(connection, message);
+    });
+  }
+
+  protected onDataCallback(connection: DataConnection, message: Message): void {
+    switch (message.type) {
+      case MessageType.Text:
+        this.messagesSubject.next(message);
+        break;
+    }
   }
 
   public send(message: Message): void {
