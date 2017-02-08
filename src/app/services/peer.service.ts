@@ -10,7 +10,9 @@ export abstract class PeerService {
   private _connections: DataConnection[];
 
   constructor() {
-    this._option = { key: 'm9jf0d77w8p30udi' };
+    this._option =
+      //{ key: 'm9jf0d77w8p30udi' };
+      { host: 'localhost', port: 9000 };
     this._messagesSubject = new Subject();
     this._connections = [];
   }

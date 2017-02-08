@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, NgZone} from '@angular/core';
 import {MessageResult, MessageType, Message} from "./message";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {PeerService} from "./services/peer.service";
@@ -12,12 +12,11 @@ import {Observable, Subject, BehaviorSubject, Subscriber} from "rxjs";
 export class GameComponent {
 
   private peerService: PeerService;
-  private messagesSubject: BehaviorSubject<Message[]>;
-  private messagesArray: Message[];
+  public messages: Message[];
   public enterFormGroup: FormGroup;
   public textFormGroup: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private zone: NgZone) {
     this.peerService = null;
     this.enterFormGroup = this.formBuilder.group({
       id: null,
@@ -26,12 +25,7 @@ export class GameComponent {
     this.textFormGroup = this.formBuilder.group({
       text: null
     });
-    this.messagesSubject = new BehaviorSubject([]);
-    this.messagesArray = [];
-  }
-
-  public get messages() {
-    return this.messagesSubject.asObservable();
+    this.messages = [];
   }
 
   public get isConnected(): boolean {
@@ -44,10 +38,7 @@ export class GameComponent {
     } else {
       this.peerService = new HostPeerService(this.enterFormGroup.value.id);
     }
-    this.peerService.messagesSubject.subscribe(m => {
-      this.messagesArray.push(m);
-      this.messagesSubject.next(this.messagesArray);
-    });
+    this.peerService.messagesSubject.subscribe(m => this.zone.run(() => this.messages.push(m)));
   }
 
   public sendText() {

@@ -17,7 +17,7 @@
 </div>
 <div [hidden]="!isConnected">
   <ul>
-    <li *ngFor="let message of messages | async">{{message.data}}</li>
+    <li *ngFor="let message of messages">{{message.data}}</li>
   </ul>
   <form class="form form-content" [formGroup]="textFormGroup" (ngSubmit)="sendText()">
     <div class="row">
