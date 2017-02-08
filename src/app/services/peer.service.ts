@@ -31,6 +31,7 @@ export abstract class PeerService {
     let peerConstructor = window['Peer'];
     this._peer = id ? new peerConstructor(id, this._option) : new peerConstructor(this._option);
     this._peer.on('connection', (connection: DataConnection): void => this.newConnection(connection));
+    this._peer.on('error', e => console.log(e));
   }
 
   protected newConnection(connection: DataConnection): void {
@@ -41,6 +42,7 @@ export abstract class PeerService {
     connection.on('data', (message: Message): void => {
       this.onDataCallback(connection, message);
     });
+    connection.on('error', e => console.log(e));
   }
 
   protected onDataCallback(connection: DataConnection, message: Message): void {

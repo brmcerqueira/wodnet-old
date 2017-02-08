@@ -25,6 +25,7 @@ export class ClientPeerService extends PeerService {
       let getPeopleMessage: Message = { type: MessageType.GetPeople };
       this.host.send(getPeopleMessage);
     });
+    this.host.on('error', e => console.log(e));
   }
 
   public send(message: Message): void {
