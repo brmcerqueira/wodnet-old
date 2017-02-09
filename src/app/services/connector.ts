@@ -33,14 +33,20 @@ export abstract class Connector {
   protected createPeer(id?: string): void {
     let peerConstructor = window['Peer'];
     this._peer = id ? new peerConstructor(id, this._option) : new peerConstructor(this._option);
-    this._peer.on('connection', (connection: DataConnection): void => this.newConnection(connection));
-    if(this.stream) {
-      this._peer.on('call', c => c.answer(this.stream));
-    }
+    this._peer.on('connection', connection => this.newDataConnection(connection));
+    this._peer.on('call', connection => {
+      this.newMediaConnection(connection);
+      if(this.stream) {
+        connection.answer(this.stream);
+      }
+      else {
+        connection.answer();
+      }
+    });
     this._peer.on('error', e => console.log(e));
   }
 
-  protected newConnection(connection: DataConnection): void {
+  protected newDataConnection(connection: DataConnection): void {
     this.addConnection(connection, false);
     connection.on('close', (): void => {
       this.deleteConnection(connection.peer, false);
@@ -51,8 +57,23 @@ export abstract class Connector {
     connection.on('error', e => console.log(e));
   }
 
-  protected newConnection2(mediaConnection: MediaConnection): void {
-    mediaConnection.on('error', e => console.log(e));
+  protected newMediaConnection(connection: MediaConnection): void {
+    this.addConnection(connection, true);
+    connection.on('close', (): void => {
+      this.deleteConnection(connection.peer, true);
+    });
+    this.connectionCaptureStream(this._connections[connection.peer]);
+  }
+
+  protected connectionCaptureStream(connection: Connection): void {
+    connection.mediaConnection.on('stream', (stream: any) => {
+      let audio = new Audio();
+      audio.src = URL.createObjectURL(stream);
+      audio.load();
+      audio.play();
+      this.zone.run(() => connection.audio = audio);
+    });
+    connection.mediaConnection.on('error', e => console.log(e));
   }
 
   private addConnection(connection: DataConnection | MediaConnection, isMedia: boolean): void {
@@ -60,7 +81,7 @@ export abstract class Connector {
       let item = this._connections[connection.peer];
 
       if(!item) {
-        item = { label: connection.peer, isBlocked: false, dataConnection: null, mediaConnection: null };
+        item = { label: connection.peer, isBlocked: false, dataConnection: null, mediaConnection: null, audio: null };
         this._connections[connection.peer] = item;
       }
 
@@ -81,6 +102,7 @@ export abstract class Connector {
       if(item) {
         if (isMedia) {
           item.mediaConnection = null;
+          item.audio = null;
         }
         else {
           item.dataConnection = null;

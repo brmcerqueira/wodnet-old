@@ -5,6 +5,8 @@ import {Connector} from "./services/connector";
 import {ConnectorService} from "./services/connector.service";
 import {DataConnection} from "./peer";
 import {Connection} from "./connection";
+import {isUndefined} from "util";
+import {ClientConnector} from "./services/client.connector";
 
 @Component({
   templateUrl: 'game.component.html',
@@ -30,6 +32,11 @@ export class GameComponent {
 
   public get isConnected(): boolean {
     return this.connector != null;
+  }
+
+  public get host(): Connection {
+    return this.isConnected && (<ClientConnector>this.connector).host != undefined
+      ? (<ClientConnector>this.connector).host : null;
   }
 
   public get connections(): { [key: string]: Connection } {

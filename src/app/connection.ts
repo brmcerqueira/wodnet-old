@@ -4,5 +4,6 @@ export type Connection = {
   label: string,
   isBlocked: boolean,
   dataConnection?: DataConnection,
-  mediaConnection?: MediaConnection
+  mediaConnection?: MediaConnection,
+  audio?: HTMLAudioElement
 }
