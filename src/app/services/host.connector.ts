@@ -1,8 +1,8 @@
 import {Connector} from "./connector";
 import {Message, MessageType, MessageResult} from "../message";
-import {Connection} from "../connection";
 import { DataConnection } from "../peer";
 import {NgZone} from "@angular/core";
+import {Person} from "../person";
 
 export class HostConnector extends Connector {
 
@@ -15,12 +15,18 @@ export class HostConnector extends Connector {
     super.onDataCallback(connection, message);
     switch (message.type) {
       case MessageType.GetPeople:
-        let loadPeopleMessage: MessageResult<Connection[]> = {
+        let loadPeopleMessage: MessageResult<Person[]> = {
           type: MessageType.LoadPeople,
-          data: this.connections.filter(c => c.peer != connection.peer).map(c => {
-            return { id: c.peer, metadata: c.metadata };
-          })
+          data: []
         };
+
+        for (let key in this.connections) {
+          if(key != connection.peer) {
+            let item = this.connections[key];
+            loadPeopleMessage.data.push({ key: key, label: item.label });
+          }
+        }
+
         connection.send(loadPeopleMessage);
         break;
     }

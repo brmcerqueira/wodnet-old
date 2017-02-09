@@ -17,7 +17,7 @@
 </div>
 <div [hidden]="!isConnected">
   <ul>
-    <li *ngFor="let connection of connections">{{connection.metadata.name}}</li>
+    <li *ngFor="let key of connections | keys">{{key}} - {{connections[key].label}} - {{connections[key].isBlocked}}</li>
   </ul>
   <ul>
     <li *ngFor="let message of messages">{{message.data}}</li>

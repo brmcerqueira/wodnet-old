@@ -8,12 +8,14 @@ import {RouteModule} from "./route.module";
 import {GameComponent} from "./game.component";
 import {PageNotFoundComponent} from "./page.not.found.component";
 import {ConnectorService} from "./services/connector.service";
+import {KeysPipe} from "./keys.pipe";
 
 @NgModule({
   declarations: [
     MasterComponent,
     GameComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    KeysPipe
   ],
   imports: [
     BrowserModule,

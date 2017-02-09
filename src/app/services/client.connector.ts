@@ -1,7 +1,6 @@
 import {Connector} from "./connector";
 import {Message, MessageType, MessageResult} from "../message";
 import {Person} from "../person";
-import {Connection} from "../connection";
 import {DataConnection} from "../peer";
 import {NgZone} from "@angular/core";
 
@@ -12,14 +11,18 @@ export class ClientConnector extends Connector {
   constructor(zone: NgZone, stream: MediaStream, id: string, name: string) {
     super(zone, stream);
     this.createPeer();
-    let person: Person = { name: name };
-    this.host = this.peer.connect(id, { metadata: person });
+    this.host = this.peer.connect(id, { label: name });
     this.host.on('open', () => {
-      this.host.on('data', (message: MessageResult<Connection[]>): void => {
+      this.host.on('data', (message: MessageResult<Person[]>): void => {
           this.onDataCallback(this.host, message);
           switch (message.type) {
             case MessageType.LoadPeople:
-              message.data.map((p) => this.peer.connect(p.id, p.metadata)).forEach((c) => this.newConnection(c));
+              message.data.forEach(p => {
+                this.newConnection(this.peer.connect(p.key, { label: p.label }));
+                if(stream) {
+                  //this.peer.call(p.id, stream);
+                }
+              });
               break;
           }
       });

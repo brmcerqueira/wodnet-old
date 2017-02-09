@@ -1,4 +1,1 @@
-export type Person = {
-  name: string,
-  isBlocked?: boolean
-}
+export type Person = { key: string, label: string }

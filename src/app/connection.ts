@@ -1,3 +1,8 @@
-import {Person} from "./person";
+import {DataConnection, MediaConnection} from "./peer";
 
-export type Connection = { id: string, metadata: Person }
+export type Connection = {
+  label: string,
+  isBlocked: boolean,
+  dataConnection?: DataConnection,
+  mediaConnection?: MediaConnection
+}

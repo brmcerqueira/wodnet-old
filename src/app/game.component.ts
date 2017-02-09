@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {Connector} from "./services/connector";
 import {ConnectorService} from "./services/connector.service";
 import {DataConnection} from "./peer";
-import {Observable} from "rxjs";
+import {Connection} from "./connection";
 
 @Component({
   templateUrl: 'game.component.html',
@@ -32,8 +32,8 @@ export class GameComponent {
     return this.connector != null;
   }
 
-  public get connections(): DataConnection[] {
-    return this.isConnected ? this.connector.connections : [];
+  public get connections(): { [key: string]: Connection } {
+    return this.isConnected ? this.connector.connections : {};
   }
 
   public enter() {
