@@ -44,6 +44,16 @@
       </div>
       <div class="col-xs-12 col-md-4">
         <div class="form-group">
+          <select formControlName="explosion">
+            <option [ngValue]="10">{{ 'ten' | translate }}</option>
+            <option [ngValue]="9">{{ 'nine' | translate }}</option>
+            <option [ngValue]="8">{{ 'eight' | translate }}</option>
+            <option [ngValue]="11">{{ 'none' | translate }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-xs-12 col-md-4">
+        <div class="form-group">
           <input type="checkbox" class="form-control" formControlName="isCanceller"/>
         </div>
       </div>

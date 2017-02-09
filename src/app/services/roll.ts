@@ -1,1 +1,5 @@
-export type Roll = { successes: number, dices: number[], explosion: number, isCriticalFailure: boolean }
+export type Roll = {
+  successes: number,
+  dices: number[],
+  isCriticalFailure: boolean
+}

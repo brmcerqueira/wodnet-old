@@ -47,7 +47,7 @@ export class DiceService {
       dices.push(dice);
     }
 
-    return { successes, dices: dices.sort((a, b) =>  b - a), explosion, isCriticalFailure };
+    return { successes, dices: dices.sort((a, b) =>  b - a), isCriticalFailure };
   }
 
   private dice(): number {
