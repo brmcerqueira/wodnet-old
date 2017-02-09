@@ -3,10 +3,10 @@ import {MessageResult, MessageType, Message} from "./message";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Connector} from "./services/connector";
 import {ConnectorService} from "./services/connector.service";
-import {DataConnection} from "./peer";
 import {Connection} from "./connection";
-import {isUndefined} from "util";
 import {ClientConnector} from "./services/client.connector";
+import {DiceService} from "./services/dice.service";
+import {Roll} from "./services/roll";
 
 @Component({
   templateUrl: 'game.component.html',
@@ -17,9 +17,11 @@ export class GameComponent {
   public messages: Message[];
   public enterFormGroup: FormGroup;
   public textFormGroup: FormGroup;
+  public rollFormGroup: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private connectorService: ConnectorService) {
+  constructor(private formBuilder: FormBuilder, private connectorService: ConnectorService, private diceService: DiceService) {
     this.connector = null;
+    this.messages = [];
     this.enterFormGroup = this.formBuilder.group({
       id: null,
       name: null
@@ -27,7 +29,11 @@ export class GameComponent {
     this.textFormGroup = this.formBuilder.group({
       text: null
     });
-    this.messages = [];
+    this.rollFormGroup = this.formBuilder.group({
+      amount: 1,
+      explosion: 10,
+      isCanceller: false
+    });
   }
 
   public get isConnected(): boolean {
@@ -57,7 +63,13 @@ export class GameComponent {
   }
 
   public sendText() {
-    let textMessage: MessageResult<string> = { type: MessageType.Text, data: this.textFormGroup.value.text };
+    let textMessage: MessageResult<string> = { type: MessageType.Chat, data: this.textFormGroup.value.text };
     this.connector.send(textMessage);
+  }
+
+  public sendRoll() {
+    let rollMessage: MessageResult<Roll> = { type: MessageType.Chat,
+      data: this.diceService.roll(this.rollFormGroup.value.amount, this.rollFormGroup.value.explosion, this.rollFormGroup.value.isCanceller) };
+    this.connector.send(rollMessage);
   }
 }

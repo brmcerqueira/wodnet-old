@@ -23,7 +23,7 @@
     <li *ngFor="let key of connections | keys">{{key}} - {{connections[key].label}} - {{connections[key].isBlocked}}</li>
   </ul>
   <ul>
-    <li *ngFor="let message of messages">{{message.data}}</li>
+    <li *ngFor="let message of messages">{{ message.data | json }}</li>
   </ul>
   <form class="form form-content" [formGroup]="textFormGroup" (ngSubmit)="sendText()">
     <div class="row">
@@ -34,5 +34,20 @@
       </div>
     </div>
     <button type="submit" class="btn btn-default">{{ 'sendText' | translate }}</button>
+  </form>
+  <form class="form form-content" [formGroup]="rollFormGroup" (ngSubmit)="sendRoll()">
+    <div class="row">
+      <div class="col-xs-12 col-md-4">
+        <div class="form-group">
+          <input type="number" class="form-control" formControlName="amount"/>
+        </div>
+      </div>
+      <div class="col-xs-12 col-md-4">
+        <div class="form-group">
+          <input type="checkbox" class="form-control" formControlName="isCanceller"/>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-default">{{ 'sendRoll' | translate }}</button>
   </form>
 </div>

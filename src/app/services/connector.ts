@@ -12,8 +12,8 @@ export abstract class Connector {
 
   constructor(private zone: NgZone, private stream: MediaStream) {
     this._option =
-      //{ key: 'm9jf0d77w8p30udi' };
-      { host: 'localhost', port: 9000 };
+      { key: 'm9jf0d77w8p30udi' };
+      //{ host: 'localhost', port: 9000 };
     this._messagesSubject = new Subject();
     this._connections = {};
   }
@@ -117,7 +117,7 @@ export abstract class Connector {
 
   protected onDataCallback(connection: DataConnection, message: Message): void {
     switch (message.type) {
-      case MessageType.Text:
+      case MessageType.Chat:
         this.zone.run(() => this.messagesSubject.next(message));
         break;
     }

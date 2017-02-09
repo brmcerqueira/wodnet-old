@@ -9,6 +9,7 @@ import {GameComponent} from "./game.component";
 import {PageNotFoundComponent} from "./page.not.found.component";
 import {ConnectorService} from "./services/connector.service";
 import {KeysPipe} from "./keys.pipe";
+import {DiceService} from "./services/dice.service";
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import {KeysPipe} from "./keys.pipe";
     RouteModule,
     TranslateModule.forRoot()
   ],
-  providers: [ConnectorService],
+  providers: [ConnectorService, DiceService],
   bootstrap: [MasterComponent]
 })
 export class AppModule {

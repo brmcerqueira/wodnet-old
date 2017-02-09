@@ -1,7 +1,7 @@
 export enum MessageType {
   GetPeople,
   LoadPeople,
-  Text
+  Chat
 }
 
 export interface Message {
