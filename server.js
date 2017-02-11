@@ -4,6 +4,6 @@ var ExpressPeerServer = require('peer').ExpressPeerServer;
 
 app.use(express.static(__dirname + '/dist'));
 
-var server = app.listen(process.env.PORT);
+var server = app.listen(process.env.PORT || 9000);
 
-app.use('/peerjs', ExpressPeerServer(server, { debug: true }));
+app.use("/api", ExpressPeerServer(server, { debug: true }));

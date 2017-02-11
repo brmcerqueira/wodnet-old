@@ -11,7 +11,8 @@ export abstract class Connector {
   private _connections: { [key: string]: Connection };
 
   constructor(private zone: NgZone, private stream: MediaStream) {
-    this._option = { host: window.location.host, port: 443, secure: true };
+    this._option = { host: window.location.hostname, path: "/api",
+      port: window.location.port && window.location.port != "" ? parseInt(window.location.port): 443 };
     this._messagesSubject = new Subject();
     this._connections = {};
   }
