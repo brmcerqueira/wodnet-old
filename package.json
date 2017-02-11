@@ -29,6 +29,7 @@
     "core-js": "^2.4.1",
     "express": "^4.14.1",
     "font-awesome": "^4.7.0",
+    "http": "0.0.0",
     "ng2-translate": "^5.0.0",
     "peer": "^0.2.8",
     "peerjs": "^0.3.14",
