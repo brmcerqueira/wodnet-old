@@ -11,7 +11,7 @@ export abstract class Connector {
   private _connections: { [key: string]: Connection };
 
   constructor(private zone: NgZone, private stream: MediaStream) {
-    this._option = { host: window.location.host, port: 8080, path: '/peerjs' };
+    this._option = { host: window.location.host, port: 443 };
     this._messagesSubject = new Subject();
     this._connections = {};
   }
