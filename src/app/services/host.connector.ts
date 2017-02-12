@@ -2,7 +2,7 @@ import {Connector} from "./connector";
 import {Message, MessageType, MessageResult} from "../message";
 import { DataConnection } from "../peer";
 import {NgZone} from "@angular/core";
-import {Person} from "../person";
+import {SetupData} from "../setup.data";
 
 export class HostConnector extends Connector {
 
@@ -14,16 +14,16 @@ export class HostConnector extends Connector {
   protected onDataCallback(connection: DataConnection, message: Message): void {
     super.onDataCallback(connection, message);
     switch (message.type) {
-      case MessageType.GetPeople:
-        let loadPeopleMessage: MessageResult<Person[]> = {
-          type: MessageType.LoadPeople,
-          data: []
+      case MessageType.GetSetupData:
+        let loadPeopleMessage: MessageResult<SetupData> = {
+          type: MessageType.LoadSetupData,
+          data: { character: null, people:[] }
         };
 
         for (let key in this.connections) {
           if(key != connection.peer) {
             let item = this.connections[key];
-            loadPeopleMessage.data.push({ key: key, label: item.label });
+            loadPeopleMessage.data.people.push({ key: key, label: item.label });
           }
         }
 

@@ -1,6 +1,6 @@
 export enum MessageType {
-  GetPeople,
-  LoadPeople,
+  GetSetupData,
+  LoadSetupData,
   Chat
 }
 
