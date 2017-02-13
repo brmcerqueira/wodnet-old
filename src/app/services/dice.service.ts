@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Roll} from "./roll";
+import {Roll} from "../dtos/roll";
 
 @Injectable()
 export class DiceService {

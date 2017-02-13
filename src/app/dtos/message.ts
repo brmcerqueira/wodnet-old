@@ -1,7 +1,9 @@
 export enum MessageType {
   GetSetupData,
   LoadSetupData,
-  Chat
+  Text,
+  Roll,
+  Character
 }
 
 export interface Message {

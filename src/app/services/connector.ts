@@ -1,29 +1,38 @@
 import {Subject} from "rxjs";
-import {Message, MessageType} from "../message";
+import {Message, MessageType, MessageResult} from "../dtos/message";
 import {Peer, PeerJSOption, DataConnection, MediaConnection} from "../peer";
 import {NgZone} from "@angular/core";
 import {Connection} from "../connection";
 import {environment} from "../../environments/environment";
+import {Roll} from "../dtos/roll";
 
 export abstract class Connector {
   private _peer: Peer;
   private _option: PeerJSOption;
-  private _messagesSubject: Subject<Message>;
+  private _textMessageSubject: Subject<MessageResult<string>>;
+  private _rollMessageSubject: Subject<MessageResult<Roll>>;
   private _connections: { [key: string]: Connection };
 
   constructor(private zone: NgZone, private stream: MediaStream) {
     this._option = { host: window.location.hostname, path: "/api", port: environment.port };
-    this._messagesSubject = new Subject();
+    this._textMessageSubject = new Subject();
+    this._rollMessageSubject = new Subject();
     this._connections = {};
   }
 
-  public get messagesSubject(): Subject<Message> {
-    return this._messagesSubject;
+  public get textMessageSubject(): Subject<MessageResult<string>> {
+    return this._textMessageSubject;
+  }
+
+  public get rollMessageSubject(): Subject<MessageResult<Roll>> {
+    return this._rollMessageSubject;
   }
 
   public get connections(): { [key: string]: Connection } {
     return this._connections;
   }
+
+  public abstract get host(): Connection;
 
   protected get peer(): Peer {
     return this._peer;
@@ -116,19 +125,31 @@ export abstract class Connector {
 
   protected onDataCallback(connection: DataConnection, message: Message): void {
     switch (message.type) {
-      case MessageType.Chat:
-        this.zone.run(() => this.messagesSubject.next(message));
+      case MessageType.Text:
+        this.zone.run(() => this._textMessageSubject.next(<MessageResult<string>>message));
+        break;
+      case MessageType.Roll:
+        this.zone.run(() => this._rollMessageSubject.next(<MessageResult<Roll>>message));
         break;
     }
   }
 
-  public send(message: Message): void {
-    this.messagesSubject.next(message);
+  protected send(message: Message): void {
     for (let key in this._connections) {
       let connection = this._connections[key];
       if(!connection.isBlocked) {
         connection.dataConnection.send(message);
       }
     }
+  }
+
+  public sendText(message: MessageResult<string>): void {
+    this._textMessageSubject.next(message);
+    this.send(message);
+  }
+
+  public sendRoll(message: MessageResult<Roll>): void {
+    this._rollMessageSubject.next(message);
+    this.send(message);
   }
 }

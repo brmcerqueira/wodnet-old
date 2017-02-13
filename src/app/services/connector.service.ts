@@ -1,36 +1,58 @@
 import {NgZone, Injectable} from "@angular/core";
 import {HostConnector} from "./host.connector";
 import {ClientConnector} from "./client.connector";
-import {Observable, Subscriber} from "rxjs";
+import {Observable, Subscriber, Subject} from "rxjs";
+import {Connector} from "./connector";
 
 @Injectable()
 export class ConnectorService {
 
+  private _connector: Connector;
+  private _connectorSubject: Subject<Connector>;
+
   constructor(private zone: NgZone) {
+    this._connector = null;
+    this._connectorSubject = new Subject();
   }
 
-  private createConnector<T>(createCallback: (stream: MediaStream) => T): Observable<T> {
-    return new Observable<T>((subscriber: Subscriber<T>) => {
-      let errorCallback = e => {
-        console.log(e);
-        this.zone.run(() => subscriber.next(createCallback(null)));
-      };
-      try {
-        navigator.getUserMedia({video: false, audio: true},
-          e => this.zone.run(() => subscriber.next(createCallback(e))),
-          errorCallback);
-      }
-      catch (e) {
-        errorCallback(e);
-      }
-    });
+  private createConnector(createCallback: (stream: MediaStream) => Connector): void {
+    let connectorCallback = m => {
+      this.zone.run(() => {
+        this._connector = createCallback(m);
+        this._connectorSubject.next();
+      });
+    };
+
+    let errorCallback = e => {
+      console.log(e);
+      connectorCallback(null);
+    };
+
+    try {
+      navigator.getUserMedia({video: false, audio: true}, connectorCallback, errorCallback);
+    }
+    catch (e) {
+      errorCallback(e);
+    }
   }
 
-  public client(id: string, name: string): Observable<ClientConnector> {
-    return this.createConnector(m => new ClientConnector(this.zone, m, id, name));
+  public startClient(id: string, name: string): void {
+    this.createConnector(m => new ClientConnector(this.zone, m, id, name));
   }
 
-  public host(id: string): Observable<HostConnector> {
-    return this.createConnector(m => new HostConnector(this.zone, m, id));
+  public startHost(id: string): void {
+    this.createConnector(m => new HostConnector(this.zone, m, id));
+  }
+
+  public get isConnected(): boolean {
+    return this.connector != null;
+  }
+
+  public get connector(): Connector {
+    return this._connector;
+  }
+
+  public get connectorSubject(): Subject<Connector> {
+    return this._connectorSubject;
   }
 }

@@ -1,8 +1,9 @@
 import {Connector} from "./connector";
-import {Message, MessageType, MessageResult} from "../message";
+import {Message, MessageType, MessageResult} from "../dtos/message";
 import { DataConnection } from "../peer";
 import {NgZone} from "@angular/core";
-import {SetupData} from "../setup.data";
+import {SetupData} from "../dtos/setup.data";
+import {Connection} from "../connection";
 
 export class HostConnector extends Connector {
 
@@ -15,7 +16,7 @@ export class HostConnector extends Connector {
     super.onDataCallback(connection, message);
     switch (message.type) {
       case MessageType.GetSetupData:
-        let loadPeopleMessage: MessageResult<SetupData> = {
+        let loadSetupDataMessage: MessageResult<SetupData> = {
           type: MessageType.LoadSetupData,
           data: { character: null, people:[] }
         };
@@ -23,12 +24,16 @@ export class HostConnector extends Connector {
         for (let key in this.connections) {
           if(key != connection.peer) {
             let item = this.connections[key];
-            loadPeopleMessage.data.people.push({ key: key, label: item.label });
+            loadSetupDataMessage.data.people.push({ key: key, label: item.label });
           }
         }
 
-        connection.send(loadPeopleMessage);
+        connection.send(loadSetupDataMessage);
         break;
     }
+  }
+
+  public get host(): Connection {
+    return null;
   }
 }

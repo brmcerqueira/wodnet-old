@@ -1,11 +1,11 @@
 import {Connector} from "./connector";
-import {Message, MessageType, MessageResult} from "../message";
-import {Person} from "../person";
+import {Message, MessageType, MessageResult} from "../dtos/message";
+import {Person} from "../dtos/person";
 import {DataConnection} from "../peer";
 import {NgZone} from "@angular/core";
 import {Connection} from "../connection";
 import {Subject} from "rxjs";
-import {SetupData} from "../setup.data";
+import {SetupData} from "../dtos/setup.data";
 
 export class ClientConnector extends Connector {
 
@@ -39,8 +39,8 @@ export class ClientConnector extends Connector {
               break;
           }
       });
-      let getPeopleMessage: Message = { type: MessageType.GetSetupData };
-      this._host.dataConnection.send(getPeopleMessage);
+      let getSetupDataMessage: Message = { type: MessageType.GetSetupData };
+      this._host.dataConnection.send(getSetupDataMessage);
     });
     this._host.dataConnection.on('error', e => console.log(e));
   }
@@ -49,10 +49,10 @@ export class ClientConnector extends Connector {
     return this._host;
   }
 
-  public send(message: Message): void {
+  protected send(message: Message): void {
+    super.send(message);
     if(!this._host.isBlocked) {
       this._host.dataConnection.send(message);
     }
-    super.send(message);
   }
 }
