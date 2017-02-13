@@ -7,10 +7,12 @@ import {Connector} from "./connector";
 @Injectable()
 export class ConnectorService {
 
+  private _isHost: boolean;
   private _connector: Connector;
   private _connectorSubject: Subject<Connector>;
 
   constructor(private zone: NgZone) {
+    this._isHost = false;
     this._connector = null;
     this._connectorSubject = new Subject();
   }
@@ -41,11 +43,18 @@ export class ConnectorService {
   }
 
   public startHost(id: string): void {
-    this.createConnector(m => new HostConnector(this.zone, m, id));
+    this.createConnector(m => {
+      this._isHost = true;
+      return new HostConnector(this.zone, m, id);
+    });
   }
 
   public get isConnected(): boolean {
     return this.connector != null;
+  }
+
+  public get isHost(): boolean {
+    return this._isHost;
   }
 
   public get connector(): Connector {

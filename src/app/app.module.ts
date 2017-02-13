@@ -10,11 +10,13 @@ import {PageNotFoundComponent} from "./page.not.found.component";
 import {ConnectorService} from "./services/connector.service";
 import {KeysPipe} from "./keys.pipe";
 import {DiceService} from "./services/dice.service";
+import {CharacterComponent} from "./character.component";
 
 @NgModule({
   declarations: [
     MasterComponent,
     GameComponent,
+    CharacterComponent,
     PageNotFoundComponent,
     KeysPipe
   ],

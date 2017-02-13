@@ -2,7 +2,7 @@ import {Subject} from "rxjs";
 import {Message, MessageType, MessageResult} from "../dtos/message";
 import {Peer, PeerJSOption, DataConnection, MediaConnection} from "../peer";
 import {NgZone} from "@angular/core";
-import {Connection} from "../connection";
+import {Connection} from "../dtos/connection";
 import {environment} from "../../environments/environment";
 import {Roll} from "../dtos/roll";
 
@@ -31,8 +31,6 @@ export abstract class Connector {
   public get connections(): { [key: string]: Connection } {
     return this._connections;
   }
-
-  public abstract get host(): Connection;
 
   protected get peer(): Peer {
     return this._peer;
@@ -89,7 +87,8 @@ export abstract class Connector {
       let item = this._connections[connection.peer];
 
       if(!item) {
-        item = { label: connection.peer, isBlocked: false, dataConnection: null, mediaConnection: null, audio: null };
+        item = { label: connection.peer, isBlocked: false, dataConnection: null,
+          mediaConnection: null, audio: null, character: null };
         this._connections[connection.peer] = item;
       }
 
@@ -143,12 +142,14 @@ export abstract class Connector {
     }
   }
 
-  public sendText(message: MessageResult<string>): void {
+  public sendText(text: string): void {
+    let message = { type: MessageType.Text, data: text };
     this._textMessageSubject.next(message);
     this.send(message);
   }
 
-  public sendRoll(message: MessageResult<Roll>): void {
+  public sendRoll(roll: Roll): void {
+    let message = { type: MessageType.Roll, data: roll };
     this._rollMessageSubject.next(message);
     this.send(message);
   }

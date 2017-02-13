@@ -1,9 +1,10 @@
-import {DataConnection, MediaConnection} from "./peer";
+import {DataConnection, MediaConnection} from "../peer";
 
 export type Connection = {
   label: string,
   isBlocked: boolean,
   dataConnection?: DataConnection,
   mediaConnection?: MediaConnection,
-  audio?: HTMLAudioElement
+  audio?: HTMLAudioElement,
+  character?: any
 }

@@ -2,7 +2,8 @@ import {Component} from '@angular/core';
 import {MessageType, Message} from "./dtos/message";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {ConnectorService} from "./services/connector.service";
-import {Connection} from "./connection";
+import {Connection} from "./dtos/connection";
+import {ClientConnector} from "./services/client.connector";
 import {DiceService} from "./services/dice.service";
 
 @Component({
@@ -40,7 +41,7 @@ export class GameComponent {
   }
 
   public get host(): Connection {
-    return this.connectorService.connector.host;
+    return this.isConnected && !this.connectorService.isHost && (<ClientConnector>this.connectorService.connector).host;
   }
 
   public get connections(): { [key: string]: Connection } {
@@ -56,13 +57,12 @@ export class GameComponent {
   }
 
   public sendText() {
-    this.connectorService.connector.sendText({ type: MessageType.Text, data: this.textFormGroup.value.text });
+    this.connectorService.connector.sendText(this.textFormGroup.value.text);
   }
 
   public sendRoll() {
-    this.connectorService.connector.sendRoll({ type: MessageType.Roll,
-      data: this.diceService.roll(this.rollFormGroup.value.amount,
+    this.connectorService.connector.sendRoll(this.diceService.roll(this.rollFormGroup.value.amount,
         this.rollFormGroup.value.explosion,
-        this.rollFormGroup.value.isCanceller)});
+        this.rollFormGroup.value.isCanceller));
   }
 }
