@@ -3,6 +3,7 @@ import {Message, MessageType} from "../message";
 import {Peer, PeerJSOption, DataConnection, MediaConnection} from "../peer";
 import {NgZone} from "@angular/core";
 import {Connection} from "../connection";
+import {environment} from "../../environments/environment";
 
 export abstract class Connector {
   private _peer: Peer;
@@ -11,8 +12,7 @@ export abstract class Connector {
   private _connections: { [key: string]: Connection };
 
   constructor(private zone: NgZone, private stream: MediaStream) {
-    this._option = { host: window.location.hostname, path: "/api",
-      port: window.location.port && window.location.port != "" ? parseInt(window.location.port): 443 };
+    this._option = { host: window.location.hostname, path: "/api", port: environment.port };
     this._messagesSubject = new Subject();
     this._connections = {};
   }
