@@ -52,8 +52,8 @@ export abstract class Connector {
     this._peer.on('error', e => console.log(e));
   }
 
-  protected newDataConnection(connection: DataConnection): void {
-    this.addConnection(connection, false);
+  protected newDataConnection(connection: DataConnection, label?: string): void {
+    this.addConnection(connection, false, label ? label : connection.label);
     connection.on('close', (): void => {
       this.deleteConnection(connection.peer, false);
     });
@@ -82,12 +82,12 @@ export abstract class Connector {
     connection.mediaConnection.on('error', e => console.log(e));
   }
 
-  private addConnection(connection: DataConnection | MediaConnection, isMedia: boolean): void {
+  private addConnection(connection: DataConnection | MediaConnection, isMedia: boolean, label?: string): void {
     this.zone.run(() => {
       let item = this._connections[connection.peer];
 
       if(!item) {
-        item = { label: connection.peer, isBlocked: false, dataConnection: null,
+        item = { label: label ? label : connection.peer, isBlocked: false, dataConnection: null,
           mediaConnection: null, audio: null, character: null };
         this._connections[connection.peer] = item;
       }
@@ -97,7 +97,6 @@ export abstract class Connector {
       }
       else {
         item.dataConnection = <DataConnection>connection;
-        item.label = item.dataConnection.label;
       }
     });
   }

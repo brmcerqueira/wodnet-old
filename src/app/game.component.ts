@@ -30,10 +30,10 @@ export class GameComponent {
       explosion: 10,
       isCanceller: false
     });
-    this.connectorService.connectorSubject.subscribe(() => {
+    this.connectorService.connectorCallback = () => {
       this.connectorService.connector.textMessageSubject.subscribe(m => this.messages.push(m));
       this.connectorService.connector.rollMessageSubject.subscribe(m => this.messages.push(m));
-    });
+    };
   }
 
   public get isConnected(): boolean {

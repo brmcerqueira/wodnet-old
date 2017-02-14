@@ -1,25 +1,21 @@
 import {Connector} from "./connector";
 import {Message, MessageType, MessageResult} from "../dtos/message";
-import {Person} from "../dtos/person";
-import {DataConnection} from "../peer";
 import {NgZone} from "@angular/core";
 import {Connection} from "../dtos/connection";
-import {Subject} from "rxjs";
-import {SetupData} from "../dtos/setup.data";
 import {Character} from "../dtos/character";
 
 export class ClientConnector extends Connector {
 
   private _host: Connection;
-  private _characterSubject: Subject<Character>;
+  private _character: Character;
 
   constructor(zone: NgZone, stream: MediaStream, id: string, name: string) {
     super(zone, stream);
-    this._characterSubject = new Subject();
+    this._character = null;
     this.createPeer();
     zone.run(() => {
       this._host = {label: id, isBlocked: false};
-      this._host.dataConnection = this.peer.connect(id, {label: name});
+      this._host.dataConnection = this.peer.connect(id, { label: name });
       if (stream) {
         this._host.mediaConnection = this.peer.call(id, stream);
         this.connectionCaptureStream(this._host);
@@ -30,16 +26,16 @@ export class ClientConnector extends Connector {
           this.onDataCallback(this._host.dataConnection, message);
           switch (message.type) {
             case MessageType.LoadSetupData:
-              zone.run(() => this._characterSubject.next(message.data.character));
-              message.data.people.forEach(p => {
-                this.newDataConnection(this.peer.connect(p.key, { label: p.label }));
+              zone.run(() => this._character = message.data.character);
+              for (let key in message.data.people) {
+                this.newDataConnection(this.peer.connect(key, { label: name }), message.data.people[key]);
                 if(stream) {
-                  this.newMediaConnection(this.peer.call(p.key, stream));
+                  this.newMediaConnection(this.peer.call(key, stream));
                 }
-              });
+              }
               break;
             case MessageType.Character:
-              zone.run(() => this._characterSubject.next(message.data));
+              zone.run(() => this._character = message.data);
               break;
           }
       });
@@ -53,8 +49,8 @@ export class ClientConnector extends Connector {
     return this._host;
   }
 
-  public get characterSubject(): Subject<Character> {
-    return this._characterSubject;
+  public get character(): Character {
+    return this._character;
   }
 
   protected send(message: Message): void {

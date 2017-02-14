@@ -8,18 +8,10 @@ import {Character} from "./dtos/character";
 })
 export class CharacterComponent {
 
-  private _character: Character;
-
   constructor(private connectorService: ConnectorService) {
-    this._character = null;
-    if (!this.connectorService.isHost) {
-      (<ClientConnector>this.connectorService.connector).characterSubject.subscribe(c => {
-        this._character = c;
-      });
-    }
   }
 
   public get character(): Character {
-    return this._character;
+    return this.connectorService.isHost ? null : (<ClientConnector>this.connectorService.connector).character;
   }
 }

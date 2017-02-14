@@ -1,2 +1,4 @@
-<div>{{character.name}}</div>
-<div>{{character.sheet}}</div>
+<div *ngIf="character">
+  <div>{{character.name}}</div>
+  <div>{{character.sheet}}</div>
+</div>

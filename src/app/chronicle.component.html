@@ -1,5 +1,5 @@
-<select>
-  <option *ngFor="let key of connections | keys" (click)="connection = connections[key]">{{ connections[key].character?.name }} ( {{connections[key].dataConnection.label}} )</option>
+<select (change)="connectionChange(connections[$event.target.value])">
+  <option *ngFor="let key of connections | keys" [value]="key">{{ connections[key].character?.name }} ( {{connections[key].dataConnection.label}} )</option>
 </select>
 <form class="form form-content" [formGroup]="characterFormGroup" (ngSubmit)="saveCharacter()">
   <div class="row">

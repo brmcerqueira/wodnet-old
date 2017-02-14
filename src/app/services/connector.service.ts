@@ -9,19 +9,20 @@ export class ConnectorService {
 
   private _isHost: boolean;
   private _connector: Connector;
-  private _connectorSubject: Subject<Connector>;
+  private _connectorCallback: () => void;
 
   constructor(private zone: NgZone) {
     this._isHost = false;
     this._connector = null;
-    this._connectorSubject = new Subject();
   }
 
   private createConnector(createCallback: (stream: MediaStream) => Connector): void {
     let connectorCallback = m => {
       this.zone.run(() => {
         this._connector = createCallback(m);
-        this._connectorSubject.next();
+        if (this._connectorCallback) {
+          this._connectorCallback();
+        }
       });
     };
 
@@ -61,7 +62,10 @@ export class ConnectorService {
     return this._connector;
   }
 
-  public get connectorSubject(): Subject<Connector> {
-    return this._connectorSubject;
+  public set connectorCallback(value: () => void) {
+    this._connectorCallback = value;
+    if (this.isConnected) {
+      this._connectorCallback();
+    }
   }
 }

@@ -2,12 +2,14 @@ import {Component} from "@angular/core";
 import {ConnectorService} from "./services/connector.service";
 import {Connection} from "./dtos/connection";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {MessageType} from "./dtos/message";
 
 @Component({
   templateUrl: 'chronicle.component.html',
 })
 export class ChronicleComponent {
 
+  private _connection: Connection;
   public characterFormGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder, private connectorService: ConnectorService) {
@@ -15,14 +17,21 @@ export class ChronicleComponent {
       name: null,
       sheet: null
     });
+
+    for (let key in this.connectorService.connector.connections) {
+      this.connectionChange(this.connectorService.connector.connections[key]);
+      break;
+    }
   }
 
   public get connections(): { [key: string]: Connection } {
     return this.connectorService.connector.connections;
   }
 
-  public set connection(value: Connection) {
-    let data = value ? {
+  public connectionChange(value: Connection): void {
+    this._connection = value;
+
+    let data = value.character ? {
       name: value.character.name,
       sheet: value.character.name
     } : {
@@ -33,7 +42,15 @@ export class ChronicleComponent {
     this.characterFormGroup.setValue(data);
   }
 
-  public saveCharacter() {
-
+  public saveCharacter(): void {
+    if (this._connection) {
+      this._connection.character = this.characterFormGroup.value;
+      if (this._connection.dataConnection) {
+        this._connection.dataConnection.send({
+          type: MessageType.Character,
+          data: this._connection.character
+        });
+      }
+    }
   }
 }

@@ -1,6 +1,6 @@
-import {Person} from "./person";
+import {Character} from "./character";
 
 export type SetupData = {
-  character: any,
-  people: Person[]
+  character: Character,
+  people: { [key: string]: string }
 }
