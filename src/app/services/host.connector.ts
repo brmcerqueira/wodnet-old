@@ -3,10 +3,11 @@ import {Message, MessageType, MessageResult} from "../dtos/message";
 import { DataConnection } from "../peer";
 import {NgZone} from "@angular/core";
 import {SetupData} from "../dtos/setup.data";
+import {ChronicleService} from "./chronicle.service";
 
 export class HostConnector extends Connector {
 
-  constructor(zone: NgZone, stream: MediaStream, id: string) {
+  constructor(private chronicleService: ChronicleService, zone: NgZone, stream: MediaStream, id: string) {
     super(zone, stream);
     this.createPeer(id);
   }
@@ -23,7 +24,8 @@ export class HostConnector extends Connector {
         for (let key in this.connections) {
           if(key != connection.peer) {
             let item = this.connections[key];
-            loadSetupDataMessage.data.character = item.character;
+            let character = this.chronicleService[item.dataConnection.metadata.fingerprint];
+            loadSetupDataMessage.data.character = character ? character : null;
             loadSetupDataMessage.data.people[key] = item.label;
           }
         }

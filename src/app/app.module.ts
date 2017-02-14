@@ -12,6 +12,7 @@ import {KeysPipe} from "./keys.pipe";
 import {DiceService} from "./services/dice.service";
 import {CharacterComponent} from "./character.component";
 import {ChronicleComponent} from "./chronicle.component";
+import {ChronicleService} from "./services/chronicle.service";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,7 @@ import {ChronicleComponent} from "./chronicle.component";
     RouteModule,
     TranslateModule.forRoot()
   ],
-  providers: [ConnectorService, DiceService],
+  providers: [ConnectorService, ChronicleService, DiceService],
   bootstrap: [MasterComponent]
 })
 export class AppModule {

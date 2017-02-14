@@ -6,6 +6,5 @@ export type Connection = {
   isBlocked: boolean,
   dataConnection?: DataConnection,
   mediaConnection?: MediaConnection,
-  audio?: HTMLAudioElement,
-  character?: Character
+  audio?: HTMLAudioElement
 }

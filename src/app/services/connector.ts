@@ -88,7 +88,7 @@ export abstract class Connector {
 
       if(!item) {
         item = { label: label ? label : connection.peer, isBlocked: false, dataConnection: null,
-          mediaConnection: null, audio: null, character: null };
+          mediaConnection: null, audio: null };
         this._connections[connection.peer] = item;
       }
 

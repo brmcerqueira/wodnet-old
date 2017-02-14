@@ -1,8 +1,8 @@
 import {NgZone, Injectable} from "@angular/core";
 import {HostConnector} from "./host.connector";
 import {ClientConnector} from "./client.connector";
-import {Observable, Subscriber, Subject} from "rxjs";
 import {Connector} from "./connector";
+import {ChronicleService} from "./chronicle.service";
 
 @Injectable()
 export class ConnectorService {
@@ -11,7 +11,7 @@ export class ConnectorService {
   private _connector: Connector;
   private _connectorCallback: () => void;
 
-  constructor(private zone: NgZone) {
+  constructor(private zone: NgZone, private chronicleService: ChronicleService) {
     this._isHost = false;
     this._connector = null;
   }
@@ -40,13 +40,13 @@ export class ConnectorService {
   }
 
   public startClient(id: string, name: string): void {
-    this.createConnector(m => new ClientConnector(this.zone, m, id, name));
+    new window['Fingerprint2']().get(r => this.createConnector(m => new ClientConnector(this.zone, m, r, id, name)));
   }
 
   public startHost(id: string): void {
     this.createConnector(m => {
       this._isHost = true;
-      return new HostConnector(this.zone, m, id);
+      return new HostConnector(this.chronicleService, this.zone, m, id);
     });
   }
 
