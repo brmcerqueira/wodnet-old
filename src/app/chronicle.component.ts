@@ -95,6 +95,10 @@ export class ChronicleComponent {
     }
   }
 
+  public upload(fileList: FileList): void {
+    this.chronicleService.upload(fileList);
+  }
+
   public download(): void {
     this.chronicleService.download();
   }

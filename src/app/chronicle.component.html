@@ -4,6 +4,7 @@
 </select>
 <button type="button" class="btn btn-default" (click)="deleteCharacter()">{{ 'deleteCharacter' | translate }}</button>
 <button type="button" class="btn btn-default" (click)="download()">{{ 'download' | translate }}</button>
+<input type="file" (change)="upload($event.target.files)" accept=".json">
 <form *ngIf="isHost" class="form form-content" [formGroup]="changeCharacterKeyFormGroup" (ngSubmit)="changeCharacterKey()">
   <div class="row">
     <div class="col-xs-12 col-md-4">

@@ -36,6 +36,22 @@ export class ChronicleService {
     delete this._characters[key];
   }
 
+  public upload(fileList: FileList): void {
+    if(fileList.length > 0) {
+      let fileReader = new FileReader();
+      fileReader.onload = e => {
+        try {
+          this._characters = JSON.parse(e.target['result']);
+        }
+        catch (e) {
+          console.log(e);
+        }
+      };
+      fileReader.onerror = e => console.log(e.message);
+      fileReader.readAsText(fileList[0]);
+    }
+  }
+
   public download(): void {
     window['saveAs'](new Blob([JSON.stringify(this._characters)],
       { type: "data:application/octet-stream;charset=utf-8" }), "cronicle.json");
