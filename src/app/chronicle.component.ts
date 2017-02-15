@@ -37,8 +37,12 @@ export class ChronicleComponent {
     return this.connectorService.connector.connections;
   }
 
+  public get isHost(): boolean {
+    return this.connectorService.isHost;
+  }
+
   public characterChange(key: string): void {
-    this._key = key;
+    this._key = key == "" ? null : key;
 
     let data = {
       name: null,
@@ -58,7 +62,7 @@ export class ChronicleComponent {
   public changeCharacterKey(): void {
     if (this._key) {
       let player = this.changeCharacterKeyFormGroup.value.player;
-      if (player) {
+      if (player != "") {
         let connection = this.connections[player];
         if (connection && connection.dataConnection && connection.dataConnection.metadata && connection.dataConnection.metadata.fingerprint) {
           let fingerprint = connection.dataConnection.metadata.fingerprint;
@@ -91,15 +95,21 @@ export class ChronicleComponent {
     }
   }
 
+  public download(): void {
+    this.chronicleService.download();
+  }
+
   private trySend(code: string, character: Character) {
-    for (let key in this.connections) {
-      let dataConnection = this.connections[key].dataConnection;
-      if (dataConnection.metadata.fingerprint == code) {
-        dataConnection.send({
-          type: MessageType.Character,
-          data: character
-        });
-        break;
+    if (this.isHost) {
+      for (let key in this.connections) {
+        let dataConnection = this.connections[key].dataConnection;
+        if (dataConnection.metadata.fingerprint == code) {
+          dataConnection.send({
+            type: MessageType.Character,
+            data: character
+          });
+          break;
+        }
       }
     }
   }

@@ -32,11 +32,16 @@ export class ChronicleService {
     this._characters[newKey] = character;
   }
 
-  private generateKey(): string {
-    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-  }
-
   public deleteCharacter(key: string): void {
     delete this._characters[key];
+  }
+
+  public download(): void {
+    window['saveAs'](new Blob([JSON.stringify(this._characters)],
+      { type: "data:application/octet-stream;charset=utf-8" }), "cronicle.json");
+  }
+
+  private generateKey(): string {
+    return 'NA_' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
   }
 }

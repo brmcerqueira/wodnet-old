@@ -25,7 +25,8 @@
       ],
       "scripts": [
         "../node_modules/peerjs/dist/peer.js",
-        "../node_modules/fingerprintjs2/fingerprint2.js"
+        "../node_modules/fingerprintjs2/fingerprint2.js",
+        "../node_modules/file-saver/FileSaver.js"
       ],
       "environments": {
         "source": "environments/environment.ts",

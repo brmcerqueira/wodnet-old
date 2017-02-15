@@ -1,14 +1,15 @@
 <select (change)="characterChange($event.target.value)">
-  <option [value]="null">{{ 'new' | translate }}</option>
+  <option value="">{{ 'new' | translate }}</option>
   <option *ngFor="let key of characters | keys" [value]="key">{{ characters[key]?.name }} ( {{key}} )</option>
 </select>
 <button type="button" class="btn btn-default" (click)="deleteCharacter()">{{ 'deleteCharacter' | translate }}</button>
-<form class="form form-content" [formGroup]="changeCharacterKeyFormGroup" (ngSubmit)="changeCharacterKey()">
+<button type="button" class="btn btn-default" (click)="download()">{{ 'download' | translate }}</button>
+<form *ngIf="isHost" class="form form-content" [formGroup]="changeCharacterKeyFormGroup" (ngSubmit)="changeCharacterKey()">
   <div class="row">
     <div class="col-xs-12 col-md-4">
       <div class="form-group">
         <select formControlName="player">
-          <option [value]="null">{{ 'none' | translate }}</option>
+          <option value="">{{ 'none' | translate }}</option>
           <option *ngFor="let key of connections | keys" [value]="key">{{ connections[key].label }}</option>
         </select>
       </div>
