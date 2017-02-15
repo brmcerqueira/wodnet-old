@@ -13,11 +13,15 @@ export abstract class Connector {
   private _rollMessageSubject: Subject<MessageResult<Roll>>;
   private _connections: { [key: string]: Connection };
 
-  constructor(private zone: NgZone, private stream: MediaStream) {
+  constructor(private zone: NgZone, private stream: MediaStream, private _origin: string) {
     this._option = { host: window.location.hostname, path: "/api", port: environment.port };
     this._textMessageSubject = new Subject();
     this._rollMessageSubject = new Subject();
     this._connections = {};
+  }
+
+  public get origin(): string {
+    return this._origin;
   }
 
   public get textMessageSubject(): Subject<MessageResult<string>> {
@@ -142,13 +146,13 @@ export abstract class Connector {
   }
 
   public sendText(text: string): void {
-    let message = { type: MessageType.Text, data: text };
+    let message = { type: MessageType.Text, origin: this.origin, data: text };
     this._textMessageSubject.next(message);
     this.send(message);
   }
 
   public sendRoll(roll: Roll): void {
-    let message = { type: MessageType.Roll, data: roll };
+    let message = { type: MessageType.Roll, origin: this.origin, data: roll };
     this._rollMessageSubject.next(message);
     this.send(message);
   }

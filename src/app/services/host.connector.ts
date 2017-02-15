@@ -7,8 +7,8 @@ import {ChronicleService} from "./chronicle.service";
 
 export class HostConnector extends Connector {
 
-  constructor(private chronicleService: ChronicleService, zone: NgZone, stream: MediaStream, id: string) {
-    super(zone, stream);
+  constructor(private chronicleService: ChronicleService, zone: NgZone, stream: MediaStream, id: string, origin: string) {
+    super(zone, stream, origin);
     this.createPeer(id);
   }
 
@@ -18,6 +18,7 @@ export class HostConnector extends Connector {
       case MessageType.GetSetupData:
         let loadSetupDataMessage: MessageResult<SetupData> = {
           type: MessageType.LoadSetupData,
+          origin: this.origin,
           data: { character: null, people: {} }
         };
 

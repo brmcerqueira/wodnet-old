@@ -59,8 +59,13 @@ export class GameComponent {
   }
 
   public sendRoll() {
-    this.connectorService.connector.sendRoll(this.diceService.roll(this.rollFormGroup.value.amount,
+    this.connectorService.connector.sendRoll({
+      amount: this.rollFormGroup.value.amount,
+      explosion: this.rollFormGroup.value.explosion,
+      isCanceller: this.rollFormGroup.value.isCanceller,
+      result: this.diceService.roll(this.rollFormGroup.value.amount,
         this.rollFormGroup.value.explosion,
-        this.rollFormGroup.value.isCanceller));
+        this.rollFormGroup.value.isCanceller)
+    });
   }
 }

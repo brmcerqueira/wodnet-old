@@ -7,10 +7,10 @@ export enum MessageType {
 }
 
 export interface Message {
-  type: MessageType
+  type: MessageType,
+  origin: string
 }
 
 export interface MessageResult<T> extends Message {
-  type: MessageType,
   data: T
 }

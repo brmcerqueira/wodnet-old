@@ -4,6 +4,7 @@ import {ClientConnector} from "./client.connector";
 import {Connector} from "./connector";
 import {ChronicleService} from "./chronicle.service";
 import {Message} from "../dtos/message";
+import {TranslateService} from "ng2-translate";
 
 @Injectable()
 export class ConnectorService {
@@ -12,16 +13,16 @@ export class ConnectorService {
   private _isHost: boolean;
   private _connector: Connector;
 
-  constructor(private zone: NgZone, private chronicleService: ChronicleService) {
+  constructor(private zone: NgZone, private translateService: TranslateService, private chronicleService: ChronicleService) {
     this._messages = [];
     this._isHost = false;
     this._connector = null;
   }
 
   private createConnector(createCallback: (stream: MediaStream) => Connector): void {
-    let connectorCallback = m => {
+    let connectorCallback = s => {
       this.zone.run(() => {
-        this._connector = createCallback(m);
+        this._connector = createCallback(s);
         this.connector.textMessageSubject.subscribe(m => this._messages.push(m));
         this.connector.rollMessageSubject.subscribe(m => this._messages.push(m));
       });
@@ -47,7 +48,7 @@ export class ConnectorService {
   public startHost(id: string): void {
     this.createConnector(m => {
       this._isHost = true;
-      return new HostConnector(this.chronicleService, this.zone, m, id);
+      return new HostConnector(this.chronicleService, this.zone, m, id, this.translateService.instant("storyteller"));
     });
   }
 

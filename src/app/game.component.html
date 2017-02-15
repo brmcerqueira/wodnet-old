@@ -23,7 +23,7 @@
     <li *ngFor="let key of connections | keys">{{key}} - {{connections[key].label}} - {{connections[key].isBlocked}}</li>
   </ul>
   <ul>
-    <li *ngFor="let message of messages">{{ message.data | json }}</li>
+    <li *ngFor="let message of messages">{{ message.origin }} : {{ message.data | json }}</li>
   </ul>
   <form class="form form-content" [formGroup]="textFormGroup" (ngSubmit)="sendText()">
     <div class="row">

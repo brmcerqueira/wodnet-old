@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
-import {Roll} from "../dtos/roll";
+import {RollResult} from "../dtos/roll";
 
 @Injectable()
 export class DiceService {
-  public roll(amount: number, explosion: number, isCanceller: boolean): Roll {
+  public roll(amount: number, explosion: number, isCanceller: boolean): RollResult {
     if (explosion) {
       if (explosion > 11) {
         explosion = 11;
