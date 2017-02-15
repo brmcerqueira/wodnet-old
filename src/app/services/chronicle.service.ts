@@ -39,9 +39,9 @@ export class ChronicleService {
   public upload(fileList: FileList): void {
     if(fileList.length > 0) {
       let fileReader = new FileReader();
-      fileReader.onload = e => {
+      fileReader.onload = event => {
         try {
-          this._characters = JSON.parse(e.target['result']);
+          this._characters = JSON.parse(event.target['result']);
         }
         catch (e) {
           console.log(e);
