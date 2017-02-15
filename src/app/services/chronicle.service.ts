@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {Character} from "../dtos/character";
-import {isUndefined} from "util";
 
 @Injectable()
 export class ChronicleService {
