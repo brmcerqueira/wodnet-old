@@ -27,8 +27,6 @@ export class ChronicleComponent {
     this.changeCharacterKeyFormGroup = this.formBuilder.group({
       player: null
     });
-
-    this.selectFirst();
   }
 
   public get characters(): { [key: string]: Character } {
@@ -42,55 +40,67 @@ export class ChronicleComponent {
   public characterChange(key: string): void {
     this._key = key;
 
-    let character = this.characters[key];
-
-    let data = character ? {
-      name: character.name,
-      sheet: character.sheet
-    } : {
+    let data = {
       name: null,
       sheet: null
     };
+
+    if (this._key && this.characters[key]) {
+      data = {
+        name: this.characters[key].name,
+        sheet: this.characters[key].sheet
+      };
+    }
 
     this.characterFormGroup.setValue(data);
   }
 
   public changeCharacterKey(): void {
-    let player = this.changeCharacterKeyFormGroup.value.player;
-    if(player) {
-      let connection = this.connections[player];
-      if (connection && connection.dataConnection && connection.dataConnection.metadata && connection.dataConnection.metadata.fingerprint) {
-        this.characterChange(this.chronicleService.changeCharacterKey(this._key, connection.dataConnection.metadata.fingerprint));
+    if (this._key) {
+      let player = this.changeCharacterKeyFormGroup.value.player;
+      if (player) {
+        let connection = this.connections[player];
+        if (connection && connection.dataConnection && connection.dataConnection.metadata && connection.dataConnection.metadata.fingerprint) {
+          let fingerprint = connection.dataConnection.metadata.fingerprint;
+          this.chronicleService.changeCharacterKey(this._key, fingerprint);
+          this.trySend(fingerprint, this.characters[fingerprint]);
+        }
       }
-    }
-    else {
-      this.chronicleService.changeCharacterKey(this._key);
+      else {
+        this.chronicleService.changeCharacterKey(this._key);
+      }
     }
   }
 
-  public newCharacter(): void {
-    this.chronicleService.newCharacter();
-    if (Object.keys(this.characters).length == 1) {
-      this.selectFirst();
+  public deleteCharacter(): void {
+    if (this._key) {
+      this.chronicleService.deleteCharacter(this._key);
+      this.characterChange(null);
     }
   }
 
   public saveCharacter(): void {
     let character = this.characterFormGroup.value;
-    this.chronicleService.characters[this._key] = character;
-    let connection = this.connections[this._key];
-    if (connection && connection.dataConnection) {
-      connection.dataConnection.send({
-        type: MessageType.Character,
-        data: character
-      });
+    if (this._key) {
+      this.chronicleService.characters[this._key] = character;
+      this.trySend(this._key, character);
+    }
+    else {
+      this.chronicleService.newCharacter(character);
+      this.characterChange(null);
     }
   }
 
-  private selectFirst(): void {
-    for (let key in this.characters) {
-      this.characterChange(key);
-      break;
+  private trySend(code: string, character: Character) {
+    for (let key in this.connections) {
+      let dataConnection = this.connections[key].dataConnection;
+      if (dataConnection.metadata.fingerprint == code) {
+        dataConnection.send({
+          type: MessageType.Character,
+          data: character
+        });
+        break;
+      }
     }
   }
 }

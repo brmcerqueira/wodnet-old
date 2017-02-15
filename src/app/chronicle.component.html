@@ -1,7 +1,8 @@
 <select (change)="characterChange($event.target.value)">
+  <option [value]="null">{{ 'new' | translate }}</option>
   <option *ngFor="let key of characters | keys" [value]="key">{{ characters[key]?.name }} ( {{key}} )</option>
 </select>
-<button type="button" class="btn btn-default" (click)="newCharacter()">{{ 'newCharacter' | translate }}</button>
+<button type="button" class="btn btn-default" (click)="deleteCharacter()">{{ 'deleteCharacter' | translate }}</button>
 <form class="form form-content" [formGroup]="changeCharacterKeyFormGroup" (ngSubmit)="changeCharacterKey()">
   <div class="row">
     <div class="col-xs-12 col-md-4">

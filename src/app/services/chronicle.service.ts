@@ -14,26 +14,29 @@ export class ChronicleService {
     return this._characters;
   }
 
-  public newCharacter(): void {
-    this._characters[this.generateKey()] = null;
+  public newCharacter(character: Character): void {
+    this._characters[this.generateKey()] = character;
   }
 
-  public changeCharacterKey(oldKey: string, newKey?: string): string {
+  public changeCharacterKey(oldKey: string, newKey?: string): void {
     let character = this._characters[oldKey];
     if (!newKey) {
       newKey = this.generateKey();
     }
     else if (this._characters[newKey]) {
       this._characters[this.generateKey()] = this._characters[newKey];
-      delete this._characters[newKey];
+      this.deleteCharacter(newKey);
     }
 
-    delete this._characters[oldKey];
+    this.deleteCharacter(oldKey);
     this._characters[newKey] = character;
-    return newKey;
   }
 
   private generateKey(): string {
     return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  }
+
+  public deleteCharacter(key: string): void {
+    delete this._characters[key];
   }
 }
