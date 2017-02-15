@@ -12,6 +12,6 @@ export class CharacterComponent {
   }
 
   public get character(): Character {
-    return this.connectorService.isHost ? null : (<ClientConnector>this.connectorService.connector).character;
+    return (<ClientConnector>this.connectorService.connector).character;
   }
 }

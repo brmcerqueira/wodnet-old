@@ -22,10 +22,14 @@ export class HostConnector extends Connector {
         };
 
         for (let key in this.connections) {
-          if(key != connection.peer) {
-            let item = this.connections[key];
-            let character = this.chronicleService[item.dataConnection.metadata.fingerprint];
-            loadSetupDataMessage.data.character = character ? character : null;
+          let item = this.connections[key];
+          if(key == connection.peer) {
+            let character = this.chronicleService.characters[item.dataConnection.metadata.fingerprint];
+            if (character) {
+              loadSetupDataMessage.data.character = character;
+            }
+          }
+          else {
             loadSetupDataMessage.data.people[key] = item.label;
           }
         }

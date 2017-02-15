@@ -11,13 +11,11 @@ import {DiceService} from "./services/dice.service";
 })
 export class GameComponent {
 
-  public messages: Message[];
   public enterFormGroup: FormGroup;
   public textFormGroup: FormGroup;
   public rollFormGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder, private connectorService: ConnectorService, private diceService: DiceService) {
-    this.messages = [];
     this.enterFormGroup = this.formBuilder.group({
       id: null,
       name: null
@@ -30,10 +28,10 @@ export class GameComponent {
       explosion: 10,
       isCanceller: false
     });
-    this.connectorService.connectorCallback = () => {
-      this.connectorService.connector.textMessageSubject.subscribe(m => this.messages.push(m));
-      this.connectorService.connector.rollMessageSubject.subscribe(m => this.messages.push(m));
-    };
+  }
+
+  public get messages(): Message[] {
+    return this.connectorService.messages;
   }
 
   public get isConnected(): boolean {

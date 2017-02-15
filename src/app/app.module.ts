@@ -13,6 +13,8 @@ import {DiceService} from "./services/dice.service";
 import {CharacterComponent} from "./character.component";
 import {ChronicleComponent} from "./chronicle.component";
 import {ChronicleService} from "./services/chronicle.service";
+import {CharacterGuard} from "./character.guard";
+import {ChronicleGuard} from "./chronicle.guard";
 
 @NgModule({
   declarations: [
@@ -31,7 +33,7 @@ import {ChronicleService} from "./services/chronicle.service";
     RouteModule,
     TranslateModule.forRoot()
   ],
-  providers: [ConnectorService, ChronicleService, DiceService],
+  providers: [ConnectorService, ChronicleService, DiceService, CharacterGuard, ChronicleGuard],
   bootstrap: [MasterComponent]
 })
 export class AppModule {

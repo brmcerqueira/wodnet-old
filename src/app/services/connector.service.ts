@@ -3,15 +3,17 @@ import {HostConnector} from "./host.connector";
 import {ClientConnector} from "./client.connector";
 import {Connector} from "./connector";
 import {ChronicleService} from "./chronicle.service";
+import {Message} from "../dtos/message";
 
 @Injectable()
 export class ConnectorService {
 
+  private _messages: Message[];
   private _isHost: boolean;
   private _connector: Connector;
-  private _connectorCallback: () => void;
 
   constructor(private zone: NgZone, private chronicleService: ChronicleService) {
+    this._messages = [];
     this._isHost = false;
     this._connector = null;
   }
@@ -20,9 +22,8 @@ export class ConnectorService {
     let connectorCallback = m => {
       this.zone.run(() => {
         this._connector = createCallback(m);
-        if (this._connectorCallback) {
-          this._connectorCallback();
-        }
+        this.connector.textMessageSubject.subscribe(m => this._messages.push(m));
+        this.connector.rollMessageSubject.subscribe(m => this._messages.push(m));
       });
     };
 
@@ -54,18 +55,15 @@ export class ConnectorService {
     return this.connector != null;
   }
 
+  public get messages(): Message[] {
+    return this._messages;
+  }
+
   public get isHost(): boolean {
     return this._isHost;
   }
 
   public get connector(): Connector {
     return this._connector;
-  }
-
-  public set connectorCallback(value: () => void) {
-    this._connectorCallback = value;
-    if (this.isConnected) {
-      this._connectorCallback();
-    }
   }
 }
