@@ -7,7 +7,8 @@ export class ChronicleService {
   private _characters: { [key: string]: Character };
 
   constructor() {
-    this._characters = {};
+    let cronicle = localStorage.getItem("cronicle");
+    this._characters = cronicle ? JSON.parse(cronicle) : {};
   }
 
   public get characters(): { [key: string]: Character } {
@@ -16,6 +17,7 @@ export class ChronicleService {
 
   public newCharacter(character: Character): void {
     this._characters[this.generateKey()] = character;
+    this.makeBackup();
   }
 
   public changeCharacterKey(oldKey: string, newKey?: string): void {
@@ -30,10 +32,17 @@ export class ChronicleService {
 
     this.deleteCharacter(oldKey);
     this._characters[newKey] = character;
+    this.makeBackup();
+  }
+
+  public updateCharacter(key: string, character: Character): void {
+    this._characters[key] = character;
+    this.makeBackup();
   }
 
   public deleteCharacter(key: string): void {
     delete this._characters[key];
+    this.makeBackup();
   }
 
   public upload(fileList: FileList): void {
@@ -42,6 +51,7 @@ export class ChronicleService {
       fileReader.onload = event => {
         try {
           this._characters = JSON.parse(event.target['result']);
+          this.makeBackup();
         }
         catch (e) {
           console.log(e);
@@ -55,6 +65,10 @@ export class ChronicleService {
   public download(): void {
     window['saveAs'](new Blob([JSON.stringify(this._characters)],
       { type: "data:application/octet-stream;charset=utf-8" }), "cronicle.json");
+  }
+
+  private makeBackup(): void {
+    localStorage.setItem("cronicle", JSON.stringify(this._characters));
   }
 
   private generateKey(): string {

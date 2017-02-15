@@ -86,7 +86,7 @@ export class ChronicleComponent {
   public saveCharacter(): void {
     let character = this.characterFormGroup.value;
     if (this._key) {
-      this.chronicleService.characters[this._key] = character;
+      this.chronicleService.updateCharacter(this._key, character);
       this.trySend(this._key, character);
     }
     else {
@@ -95,8 +95,9 @@ export class ChronicleComponent {
     }
   }
 
-  public upload(fileList: FileList): void {
-    this.chronicleService.upload(fileList);
+  public upload(event: Event): void {
+    this.chronicleService.upload(event.target['files']);
+    event.target['value'] = "";
   }
 
   public download(): void {
