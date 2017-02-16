@@ -14,7 +14,7 @@ export class ClientConnector extends Connector {
     this._character = null;
     this.createPeer();
     zone.run(() => {
-      this._host = {label: id, isBlocked: false};
+      this._host = new Connection(id);
       this._host.dataConnection = this.peer.connect(id, { label: origin, metadata: { fingerprint }});
       if (stream) {
         this._host.mediaConnection = this.peer.call(id, stream);
