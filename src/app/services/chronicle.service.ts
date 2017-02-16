@@ -21,18 +21,20 @@ export class ChronicleService {
   }
 
   public changeCharacterKey(oldKey: string, newKey?: string): void {
-    let character = this._characters[oldKey];
-    if (!newKey) {
-      newKey = this.generateKey();
-    }
-    else if (this._characters[newKey]) {
-      this._characters[this.generateKey()] = this._characters[newKey];
-      this.deleteCharacter(newKey);
-    }
+    if (oldKey != newKey) {
+      let character = this._characters[oldKey];
+      if (!newKey) {
+        newKey = this.generateKey();
+      }
+      else if (this._characters[newKey]) {
+        this._characters[this.generateKey()] = this._characters[newKey];
+        this.deleteCharacter(newKey);
+      }
 
-    this.deleteCharacter(oldKey);
-    this._characters[newKey] = character;
-    this.makeBackup();
+      this.deleteCharacter(oldKey);
+      this._characters[newKey] = character;
+      this.makeBackup();
+    }
   }
 
   public updateCharacter(key: string, character: Character): void {

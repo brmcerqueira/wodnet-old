@@ -25,7 +25,7 @@ export class ChronicleComponent {
     });
 
     this.changeCharacterKeyFormGroup = this.formBuilder.group({
-      player: null
+      player: ""
     });
   }
 
@@ -39,6 +39,19 @@ export class ChronicleComponent {
 
   public get isHost(): boolean {
     return this.connectorService.isHost;
+  }
+
+  public getPlayer(key: string): string {
+    let result = "-";
+
+    if (this.isHost) {
+      let connection = this.getConnectionByFingerprint(key);
+      if (connection) {
+        result = connection.dataConnection.label;
+      }
+    }
+
+    return result;
   }
 
   public characterChange(key: string): void {
@@ -67,11 +80,15 @@ export class ChronicleComponent {
         if (connection && connection.dataConnection && connection.dataConnection.metadata && connection.dataConnection.metadata.fingerprint) {
           let fingerprint = connection.dataConnection.metadata.fingerprint;
           this.chronicleService.changeCharacterKey(this._key, fingerprint);
-          this.trySend(fingerprint, this.characters[fingerprint]);
+          this.send(connection, this.characters[fingerprint]);
         }
       }
       else {
-        this.chronicleService.changeCharacterKey(this._key);
+        let connection = this.getConnectionByFingerprint(this._key);
+        if (connection) {
+          this.chronicleService.changeCharacterKey(this._key);
+          this.send(connection, null);
+        }
       }
     }
   }
@@ -87,7 +104,9 @@ export class ChronicleComponent {
     let character = this.characterFormGroup.value;
     if (this._key) {
       this.chronicleService.updateCharacter(this._key, character);
-      this.trySend(this._key, character);
+      if (this.isHost) {
+        this.send(this.getConnectionByFingerprint(this._key), character);
+      }
     }
     else {
       this.chronicleService.newCharacter(character);
@@ -104,18 +123,24 @@ export class ChronicleComponent {
     this.chronicleService.download();
   }
 
-  private trySend(code: string, character: Character) {
-    if (this.isHost) {
-      for (let key in this.connections) {
-        let dataConnection = this.connections[key].dataConnection;
-        if (dataConnection.metadata.fingerprint == code) {
-          dataConnection.send({
-            type: MessageType.Character,
-            data: character
-          });
-          break;
-        }
+  private send(connection: Connection, character: Character) {
+    if (connection) {
+      connection.dataConnection.send({
+        type: MessageType.Character,
+        data: character
+      });
+    }
+  }
+
+  private getConnectionByFingerprint(fingerprint: string) {
+    let result = null;
+    for (let key in this.connections) {
+      let connection = this.connections[key];
+      if (connection.dataConnection.metadata.fingerprint == fingerprint) {
+        result = connection;
+        break;
       }
     }
+    return result;
   }
 }
