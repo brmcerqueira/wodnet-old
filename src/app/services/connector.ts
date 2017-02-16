@@ -91,8 +91,7 @@ export abstract class Connector {
       let item = this._connections[connection.peer];
 
       if(!item) {
-        item = { label: label ? label : connection.peer, isBlocked: false, dataConnection: null,
-          mediaConnection: null, audio: null };
+        item =  new Connection(label ? label : connection.peer);
         this._connections[connection.peer] = item;
       }
 
