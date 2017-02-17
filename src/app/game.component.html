@@ -1,19 +1,41 @@
 <div *ngIf="!isConnected">
-  <form class="form form-content" [formGroup]="enterFormGroup" (ngSubmit)="enter()">
-    <div class="row">
-      <div class="col-xs-12 col-md-4">
-        <div class="form-group">
-          <input type="text" class="form-control" formControlName="id"/>
-        </div>
-      </div>
-      <div class="col-xs-12 col-md-4">
-        <div class="form-group">
-          <input type="text" class="form-control" formControlName="name"/>
-        </div>
-      </div>
-    </div>
-    <button type="submit" class="btn btn-default">{{ 'enter' | translate }}</button>
-  </form>
+  <ngb-tabset>
+    <ngb-tab>
+      <template ngbTabTitle>{{ 'client' | translate }}</template>
+      <template ngbTabContent>
+        <form class="form form-content" [formGroup]="clientFormGroup" (ngSubmit)="enterClient()">
+          <div class="row">
+            <div class="col-xs-12 col-md-4">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="id"/>
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-4">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="name"/>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-default">{{ 'enter' | translate }}</button>
+        </form>
+      </template>
+    </ngb-tab>
+    <ngb-tab>
+      <template ngbTabTitle>{{ 'host' | translate }}</template>
+      <template ngbTabContent>
+        <form class="form form-content" [formGroup]="hostFormGroup" (ngSubmit)="enterHost()">
+          <div class="row">
+            <div class="col-xs-12 col-md-4">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="id"/>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-default">{{ 'enter' | translate }}</button>
+        </form>
+      </template>
+    </ngb-tab>
+  </ngb-tabset>
 </div>
 <div *ngIf="isConnected">
   <div *ngIf="host">

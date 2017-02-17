@@ -5,6 +5,7 @@ import {Connector} from "./connector";
 import {ChronicleService} from "./chronicle.service";
 import {Message} from "../dtos/message";
 import {TranslateService} from "ng2-translate";
+import {Subject} from "rxjs";
 
 @Injectable()
 export class ConnectorService {
@@ -42,13 +43,13 @@ export class ConnectorService {
   }
 
   public startClient(id: string, name: string): void {
-    new window['Fingerprint2']().get(r => this.createConnector(m => new ClientConnector(this.zone, m, r, id, name)));
+    new window['Fingerprint2']().get(r => this.createConnector(m => new ClientConnector(this.zone, m, this.translateService.instant("storyteller"), r, `HOST_${id}`, name)));
   }
 
   public startHost(id: string): void {
     this.createConnector(m => {
       this._isHost = true;
-      return new HostConnector(this.chronicleService, this.zone, m, id, this.translateService.instant("storyteller"));
+      return new HostConnector(this.chronicleService, this.zone, m, `HOST_${id}`, this.translateService.instant("storyteller"));
     });
   }
 

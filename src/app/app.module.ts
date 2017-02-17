@@ -15,6 +15,7 @@ import {ChronicleComponent} from "./chronicle.component";
 import {ChronicleService} from "./services/chronicle.service";
 import {CharacterGuard} from "./character.guard";
 import {ChronicleGuard} from "./chronicle.guard";
+import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {ChronicleGuard} from "./chronicle.guard";
     HttpModule,
     ReactiveFormsModule,
     RouteModule,
+    NgbModule.forRoot(),
     TranslateModule.forRoot()
   ],
   providers: [ConnectorService, ChronicleService, DiceService, CharacterGuard, ChronicleGuard],

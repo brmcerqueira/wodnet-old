@@ -11,14 +11,18 @@ import {DiceService} from "./services/dice.service";
 })
 export class GameComponent {
 
-  public enterFormGroup: FormGroup;
+  public clientFormGroup: FormGroup;
+  public hostFormGroup: FormGroup;
   public textFormGroup: FormGroup;
   public rollFormGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder, private connectorService: ConnectorService, private diceService: DiceService) {
-    this.enterFormGroup = this.formBuilder.group({
+    this.clientFormGroup = this.formBuilder.group({
       id: null,
       name: null
+    });
+    this.hostFormGroup = this.formBuilder.group({
+      id: null
     });
     this.textFormGroup = this.formBuilder.group({
       text: null
@@ -46,12 +50,12 @@ export class GameComponent {
     return this.isConnected ? this.connectorService.connector.connections : {};
   }
 
-  public enter() {
-    if (this.enterFormGroup.value.name) {
-      this.connectorService.startClient(this.enterFormGroup.value.id, this.enterFormGroup.value.name);
-    } else {
-      this.connectorService.startHost(this.enterFormGroup.value.id);
-    }
+  public enterClient() {
+    this.connectorService.startClient(this.clientFormGroup.value.id, this.clientFormGroup.value.name);
+  }
+
+  public enterHost() {
+    this.connectorService.startHost(this.hostFormGroup.value.id);
   }
 
   public sendText() {

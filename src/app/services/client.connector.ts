@@ -9,12 +9,12 @@ export class ClientConnector extends Connector {
   private _host: Connection;
   private _character: Character;
 
-  constructor(zone: NgZone, stream: MediaStream, fingerprint: string, id: string, origin: string) {
+  constructor(zone: NgZone, stream: MediaStream, label: string, fingerprint: string, id: string, origin: string) {
     super(zone, stream, origin);
     this._character = null;
     this.createPeer();
     zone.run(() => {
-      this._host = new Connection(id);
+      this._host = new Connection(label);
       this._host.dataConnection = this.peer.connect(id, { label: origin, metadata: { fingerprint }});
       if (stream) {
         this._host.mediaConnection = this.peer.call(id, stream);
